@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const axiosClient = axios.create({
-    baseURL: "http://127.0.0.1:8000/api",
+    baseURL: "http://jira.dilnozzt.beget.tech/api",
 });
 
 axiosClient.interceptors.request.use((config) => {
@@ -21,7 +21,7 @@ axiosClient.interceptors.response.use(
                 localStorage.removeItem("ACCESS_TOKEN");
             }
         } catch (err) {
-            console.error(err);
+            // console.error(err);
         }
         throw error;
     }

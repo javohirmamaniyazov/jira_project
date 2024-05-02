@@ -1,5 +1,5 @@
-// WeeksSection.jsx
 import React, { useEffect, useState } from "react";
+import "./WeeksPage.css";
 
 const WeeksSection = ({ onDaySelect }) => {
   const [currentWeekDates, setCurrentWeekDates] = useState([]);
@@ -7,11 +7,14 @@ const WeeksSection = ({ onDaySelect }) => {
 
   useEffect(() => {
     setCurrentWeekDates(getCurrentWeekDates());
+    setSelectedDate(new Date()); // Set selected date to the current day
   }, []);
 
   const getCurrentWeekDates = () => {
     const today = new Date();
-    const firstDayOfWeek = new Date(today.setDate(today.getDate() - today.getDay()));
+    const firstDayOfWeek = new Date(
+      today.setDate(today.getDate() - today.getDay())
+    );
     const currentWeekDates = [...Array(7)].map((_, index) => {
       const day = new Date(firstDayOfWeek);
       day.setDate(firstDayOfWeek.getDate() + index);
@@ -45,14 +48,12 @@ const WeeksSection = ({ onDaySelect }) => {
 
   return (
     <div className="weeks-section">
-      <h2>Weeks</h2>
-      <button onClick={handlePrevWeek}>Previous Week</button>
-      <button onClick={handleNextWeek}>Next Week</button>
       <div className="week-cards">
+        <button onClick={handlePrevWeek} className="prevBtn">&lt;</button>
         {currentWeekDates.map((date, index) => (
           <div
             key={index}
-            className={`week-card ${selectedDate === date ? 'selected' : ''}`}
+            className={`week-card ${selectedDate.toDateString() === date.toDateString() ? "selected" : ""}`}
             onClick={() => handleDaySelect(date)}
           >
             <div className="day-name">
@@ -61,12 +62,13 @@ const WeeksSection = ({ onDaySelect }) => {
             <div className="date">
               {date.toLocaleDateString("en-GB", {
                 day: "numeric",
-                month: "long",
+                month: "numeric",
                 year: "numeric",
               })}
             </div>
           </div>
         ))}
+        <button className="nextBtn" onClick={handleNextWeek}>&gt;</button>
       </div>
     </div>
   );

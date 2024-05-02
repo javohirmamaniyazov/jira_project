@@ -1,6 +1,6 @@
 // TaskForm.jsx
 import React, { useState } from "react";
-import axiosClient from "../axiosClient";
+import axiosClient from "../../ApiConnection/axiosClient";
 
 const TaskForm = ({ selectedDate }) => {
   const [content, setContent] = useState("");
@@ -15,7 +15,7 @@ const TaskForm = ({ selectedDate }) => {
       { content, date: selectedDate.toISOString().slice(0, 10), status: "created" }
     )
     .then((response) => {
-      console.log("Task added successfully:", response.data);
+      // console.log("Task added successfully:", response.data);
       // Clear form after successful submission
       setContent("");
     })

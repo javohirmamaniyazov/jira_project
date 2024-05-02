@@ -1,5 +1,24 @@
 @import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400;1,500;1,600;1,700;1,800&display=swap');
 
+
+.layout {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+
+  .main-content {
+    display: flex;
+    flex: 2;
+    overflow-x: hidden;
+  }
+
+  .content {
+    flex: 1;
+    padding: 20px;
+    background-color: #f4f4f4;
+  }
+  
 * {
     box-sizing: border-box;
 }
@@ -25,7 +44,8 @@ input {
     background: #ffffff;
     width: 100%;
     border: 2px solid #e6e6e6;
-    margin: 0 0 15px;
+    margin: 10px 0 4px 0;
+    margin-bottom: 6px;
     padding: 15px;
     box-sizing: border-box;
     font-size: 14px;
@@ -34,6 +54,11 @@ input {
 
 input:focus {
     border-color: #5b08a7;
+}
+
+/* Add error styles for inputs */
+input.error {
+    border-color: #ff4040;
 }
 
 .btn,
@@ -205,6 +230,10 @@ table > tbody > tr > td {
     flex: 1;
 }
 
+button {
+  margin-top: 5px;
+}
+
 #defaultLayout header {
     height: 80px;
     padding: 2rem 3rem;
@@ -242,112 +271,6 @@ table > tbody > tr > td {
     }
 }
 
-
-.weeks-section {
-    margin-bottom: 20px;
-  }
-  
-  .week-cards {
-    display: flex;
-    flex-wrap: wrap;
-  }
-  
-  .week-card {
-    border: 1px solid #ccc;
-    padding: 10px;
-    margin: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-  }
-  
-  .week-card.selected {
-    background-color: lightblue;
-  }
-  
-  .current-day {
-    background-color: black;
-  }
-  
-  .week-name {
-    font-weight: bold;
-    margin-bottom: 5px;
-  }
-
-
-  /* MonthsSection.css */
-.months-section {
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    padding: 10px;
-    margin-bottom: 20px;
-  }
-  
-  .month-header {
-    text-align: center;
-    font-size: 1.2rem;
-    margin-bottom: 10px;
-  }
-  
-  .month-days {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 5px;
-  }
-  
-  .month-date {
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    padding: 5px;
-    text-align: center;
-    cursor: pointer;
-  }
-  
-  .month-date.selected {
-    background-color: #007bff;
-    color: #fff;
-  }
-  
-  .selected-day-form {
-    margin-top: 20px;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-  }
-
-  /* MonthsSection.css */
-.months-section {
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    padding: 10px;
-    margin-bottom: 20px;
-  }
-  
-  .week-slider {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-  
-  .week-day {
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    padding: 5px;
-    text-align: center;
-    cursor: pointer;
-  }
-
-  .week-names {
-    display: flex;
-    justify-content: space-between;
-    width: 100%;
-    padding: 10px 0;
-    border-bottom: 1px solid #ccc;
-  }
-  
-  .week-name {
-    flex: 2;
-    text-align: center;
-  }
   
   .week-day.selected {
     background-color: #007bff;
@@ -403,3 +326,10 @@ table > tbody > tr > td {
     background-color: #0056b3;
   }
   
+  /* Add error styles for error messages */
+  .error {
+    color: #ff4040;
+    font-size: 14px;
+    margin: 2px;
+  }
+

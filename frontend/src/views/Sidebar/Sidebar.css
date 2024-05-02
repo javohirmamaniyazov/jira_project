@@ -1,0 +1,77 @@
+.sidebar {
+    width: 250px;
+    background-color: #f0f0f0;
+    padding: 20px;
+    height: 90vh;
+    overflow-y: auto;
+  }
+  
+  .profile-info {
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 20px;
+    margin-bottom: 20px;
+  }
+  
+  .section {
+    border-bottom: 1px solid #ccc; 
+    padding: 20px 0;
+    text-decoration: none;
+  }
+
+  .section.active {
+    background-color: #007bff;
+    color: aliceblue
+  }
+
+  .inactive {
+    color: black;
+  }
+  
+  .special-task {
+    border-bottom: none;
+  }
+  
+  
+  .profile {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  
+  .profile-icon {
+    font-size: 24px;
+    margin-right: 10px;
+  }
+  
+  .user-info {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .user-name {
+    font-weight: bold;
+    margin-bottom: 5px;
+  }
+  
+  .sections {
+    margin-bottom: 20px;
+  }
+  
+  .section {
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    cursor: pointer;
+  }
+  
+  .add-task {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+  }
+  
+  .add-task-icon {
+    font-size: 20px;
+    margin-right: 5px;
+  }
+  

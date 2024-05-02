@@ -1,0 +1,91 @@
+.months-section {
+    width: 85%;
+    padding: 10px;
+    margin-bottom: 20px;
+}
+
+.month-header {
+    text-align: center;
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+}
+
+.month-days {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.month-date {
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 5px;
+    text-align: center;
+    cursor: pointer;
+}
+
+.month-date.selected {
+    background-color: #007bff;
+    color: #fff;
+}
+
+
+
+.week-slider {
+    display: flex;
+    align-items: center;
+}
+
+.week-day {
+    border: 1px solid #ccc;
+    width: 18%;
+    height: 53px;
+    text-align: center;
+    cursor: pointer;
+}
+
+.week-names {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    padding: 10px 0;
+    border-bottom: 1px solid #ccc;
+}
+
+.week-name {
+    flex: 2;
+    text-align: center;
+}
+
+.week-day.selected {
+    background-color: #007bff;
+    color: #fff;
+}
+
+
+.prev,
+.next {
+  background-color: #f8f8f8;
+  color: rgb(105, 104, 104);
+  border: 1px solid rgb(105, 104, 104);
+  border-radius: 50%;
+  font-size: 16px;
+  padding: 8px 12px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  position: absolute;
+  transform: translateY(-20%);
+  z-index: 3;
+}
+
+.prev {
+  left: 16%;
+}
+
+.next {
+  right: 3px;
+}
+
+.prevBtn.hidden,
+.nextBtn.hidden {
+  display: none;
+}
