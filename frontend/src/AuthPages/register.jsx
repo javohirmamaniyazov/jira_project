@@ -4,11 +4,11 @@ import { Link } from "react-router-dom";
 import axiosClient from "../ApiConnection/axiosClient";
 import { useStateContext } from "../contexts/contextprovider";
 
-export default function Register() { // Capitalize component name
+export default function Register() {
     const nameRef = useRef();
     const emailRef = useRef();
     const passwordRef = useRef();
-    const [errors, setErrors] = useState({}); // State for errors
+    const [errors, setErrors] = useState({});
 
     const { setUser, setToken } = useStateContext();
 
