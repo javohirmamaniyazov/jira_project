@@ -2,6 +2,7 @@
     width: 85%;
     padding: 10px;
     margin-bottom: 20px;
+
 }
 
 .month-header {
@@ -46,7 +47,7 @@
 .week-names {
     display: flex;
     justify-content: space-between;
-    width: 100%;
+    /* width: 100%; */
     padding: 10px 0;
     border-bottom: 1px solid #ccc;
 }
@@ -89,3 +90,27 @@
 .nextBtn.hidden {
   display: none;
 }
+
+@media (max-width: 1100px) {
+    .task-sections{
+      font-size: 0.5rem;
+    }
+    .months-section{
+        font-size: 0.7rem;
+        display: flex;
+        flex-direction: column;
+    }
+    .week-day{
+        font-size: 0.8rem;
+    }
+  }
+  @media (max-width: 800px) {
+    .months-section{
+        display: flex;
+        flex-direction: column;
+    }
+    .week-slider{
+        display: flex;
+        flex-direction: row;
+    }
+  }

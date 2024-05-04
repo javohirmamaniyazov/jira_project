@@ -21,6 +21,7 @@
 .week-card.selected {
   background-color: #0e4ad5;
   color: #fff;
+  
 }
 
 .prevBtn,
@@ -52,4 +53,42 @@
   display: none;
 }
 
+@media (max-width: 1100px) {
+  .weeks-section{
+    font-size: 0.7rem;
+  }
+}
+@media (max-width: 800px) {
+  .week-card{
+    display: flex;
+  }
+  .weeks-section{
+    display: flex;
+    flex-direction: column;
+  }
+}
 
+@media (max-width: 800px) {
+  .week-card {
+
+    display: none; /* Hide all day cards by default on smaller screens */
+
+  }
+  .week-cards{
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .week-card.selected,
+  .week-card.yesterday,
+  .week-card.tomorrow {
+    display: block; /* Show only the selected, yesterday, and tomorrow day cards */
+
+
+  }
+
+  .weeks-section {
+    display: flex;
+    flex-direction: column;
+  }
+}
