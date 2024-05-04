@@ -21,10 +21,24 @@ export default function Login() {
         setToken(data.token);
       })
       .catch((err) => {
-        if (err.response.status === 422) {
+        if (err.response && err.response.status === 401) {
+          const errorData = err.response.data;
+          if (errorData.errors && errorData.errors.email) {
+            setEmailError(errorData.errors.email[0]);
+          } else {
+            setEmailError("User with this email not found");
+          }
+          if (errorData.errors && errorData.errors.password) {
+            setPasswordError(errorData.errors.password[0]);
+          } else {
+            setPasswordError("Password entered incorrectly");
+          }
+        } else if (err.response && err.response.status === 422) {
           const errors = err.response.data.errors;
           setEmailError(errors.email);
           setPasswordError(errors.password);
+        } else {
+          console.error("Error occurred:", err);
         }
       });
   };

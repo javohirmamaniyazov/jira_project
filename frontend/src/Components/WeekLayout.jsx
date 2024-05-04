@@ -2,28 +2,76 @@ import React, { useEffect, useState } from "react";
 import Sidebar from "../views/Sidebar/Sidebar";
 import Navbar from "../views/Navbar/Navbar";
 import WeeksSection from "../views/Weeks/WeeksPage";
-import { useStateContext } from '../contexts/contextprovider'
+import { useStateContext } from "../contexts/contextprovider";
 import TaskForm from "../views/TaskForm/TaskForm";
 import axiosClient from "../ApiConnection/axiosClient";
 import { MdMoreVert } from "react-icons/md";
+import { Navigate, Outlet } from "react-router-dom";
 
 export default function WeekLayout() {
   const { token } = useStateContext();
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [tasks, setTasks] = useState([]);
   const [openDropdownId, setOpenDropdownId] = useState(null);
+  const [userId, setUserId] = useState(null);
+  const [isEmailVerified, setIsEmailVerified] = useState(null);
 
-  const handleDaySelect = (date) => {
-    setSelectedDate(date);
-    fetchSelectedDayTasks(date);
-  };
+
+  useEffect(() => {
+    const fetchEmailVerificationStatus = async () => {
+      try {
+        const response = await axiosClient.get("/user/email-verified", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        setIsEmailVerified(response.data);
+      } catch (error) {
+        console.error("Error fetching email verification status:", error);
+        setIsEmailVerified(false); // Set as false by default if error occurs
+      }
+    };
+
+    if (token) {
+      fetchEmailVerificationStatus();
+    }
+  }, [token]);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const response = await axiosClient.get("/user", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        setUserId(response.data.id); // Set the user ID
+      } catch (error) {
+        // Handle error here
+      }
+    };
+
+    fetchUser(); // Fetch user information when the component mounts
+  }, [token]);
+
+  useEffect(() => {
+    if (selectedDate && userId) {
+      fetchSelectedDayTasks(selectedDate);
+    }
+  }, [selectedDate, userId]);
 
   const fetchSelectedDayTasks = (date) => {
     axiosClient
-      .get("/tasks")
+      .get("/tasks", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
       .then((response) => {
         const todayTasks = response.data.filter(
-          (task) => task.date === date.toISOString().slice(0, 10)
+          (task) =>
+            task.date === date.toISOString().slice(0, 10) &&
+            task.user_id === userId
         );
         setTasks(todayTasks);
       })
@@ -33,9 +81,14 @@ export default function WeekLayout() {
       });
   };
 
-  const handleChangeStatus = (taskId, newStatus) => {
-    axiosClient
-      .put(
+  const handleDaySelect = (date) => {
+    setSelectedDate(date);
+    fetchSelectedDayTasks(date);
+  };
+
+  const handleChangeStatus = async (taskId, newStatus) => {
+    try {
+      await axiosClient.put(
         `/tasks/${taskId}`,
         { status: newStatus },
         {
@@ -43,14 +96,11 @@ export default function WeekLayout() {
             Authorization: `Bearer ${token}`,
           },
         }
-      )
-      .then((response) => {
-        // console.log("Task status updated successfully:", response.data);
-        fetchSelectedDayTasks(selectedDate);
-      })
-      .catch((error) => {
-        // console.error("Error updating task status:", error);
-      });
+      );
+      fetchSelectedDayTasks();
+    } catch (error) {
+      console.error("Error updating task status:", error);
+    }
   };
 
   const handleDeleteTask = (taskId) => {
@@ -61,17 +111,59 @@ export default function WeekLayout() {
         },
       })
       .then((response) => {
-        // console.log("Task deleted successfully:", response.data);
-        fetchSelectedDayTasks(selectedDate); // Refetch today's tasks after deleting
+        fetchSelectedDayTasks();
       })
       .catch((error) => {
-        // console.error("Error deleting task:", error);
+        console.error("Error deleting task:", error);
       });
   };
 
   const toggleDropdown = (taskId) => {
     setOpenDropdownId(openDropdownId === taskId ? null : taskId);
   };
+
+  const renderTasks = (status) => {
+    return tasks
+      .filter((task) => task.status === status)
+      .map((task) => (
+        <li key={task.id} className="task-item">
+          <span>{task.content}</span>
+          <span>{task.date}</span>
+          {openDropdownId === task.id && (
+            <div className="dropdown-menu">
+              {status !== "done" && (
+                <button
+                  onClick={() => handleChangeStatus(task.id, "in progress")}
+                >
+                  {status === "created" ? "In progress" : "Done"}
+                </button>
+              )}
+              <button onClick={() => handleDeleteTask(task.id)}>Delete</button>
+            </div>
+          )}
+          <MdMoreVert
+            onClick={() => toggleDropdown(task.id)}
+            className="more-icon"
+            size={21}
+          />
+        </li>
+      ));
+  };
+
+  if (!token) {
+    return <Navigate to="/login" />;
+  }
+
+  if (isEmailVerified === null) {
+    return <p>Loading...</p>;
+  } else if (!isEmailVerified) {
+    return (
+      <div>
+        <p>Your email is not verified. Please verify your email.</p>
+        {/* You can render a button or link to trigger the email verification process */}
+      </div>
+    );
+  }
 
   return (
     <div className="layout">
@@ -104,35 +196,7 @@ export default function WeekLayout() {
                   <div className="task-input">
                     <TaskForm selectedDate={selectedDate} />
                   </div>
-                  <ul className="task-list">
-                    {tasks
-                      .filter((task) => task.status === "created")
-                      .map((task) => (
-                        <li key={task.id} className="task-item">
-                          <span>{task.content}</span>
-                          <span>{task.date}</span>
-                          {openDropdownId === task.id && (
-                            <div className="dropdown-menu">
-                              <button
-                                onClick={() =>
-                                  handleChangeStatus(task.id, "in progress")
-                                }
-                              >
-                                In Progress
-                              </button>
-                              <button onClick={() => handleDeleteTask(task.id)}>
-                                Delete
-                              </button>
-                            </div>
-                          )}
-                          <MdMoreVert
-                            onClick={() => toggleDropdown(task.id)}
-                            className="more-icon"
-                            size={21}
-                          />
-                        </li>
-                      ))}
-                  </ul>
+                  <ul className="task-list">{renderTasks("created")}</ul>
                 </div>
                 <div className="task-section">
                   <h3 style={{ marginLeft: "10px", float: "left" }}>

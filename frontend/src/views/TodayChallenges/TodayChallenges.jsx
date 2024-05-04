@@ -4,13 +4,15 @@ import axiosClient from "../../ApiConnection/axiosClient";
 import { useStateContext } from "../../contexts/contextprovider";
 import { MdMoreVert } from "react-icons/md";
 
-const TodaysChallenges = () => {
+const TodaysChallenges = ({ user }) => {
   const { token } = useStateContext();
   const [currentDay, setCurrentDay] = useState("");
   const [content, setContent] = useState("");
   const [tasks, setTasks] = useState([]);
   const [today, setToday] = useState("");
   const [openDropdownId, setOpenDropdownId] = useState(null);
+  const [userId, setUserId] = useState(null);
+
   const toggleDropdown = (taskId) => {
     setOpenDropdownId(openDropdownId === taskId ? null : taskId);
   };
@@ -26,22 +28,45 @@ const TodaysChallenges = () => {
     setCurrentDay(formattedCurrentDay);
   }, []);
 
-  const fetchTodayTasks = () => {
-    axiosClient
-      .get("/tasks")
-      .then((response) => {
-        const todayTasks = response.data.filter((task) => task.date === today);
-        setTasks(todayTasks);
-      })
-      .catch((error) => {
-        // console.error("Error fetching today's tasks:", error);
-        setTasks([]);
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const response = await axiosClient.get("/user", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        setUserId(response.data.id); // Set the user ID
+      } catch (error) {
+        // Handle error here
+      }
+    };
+
+    fetchUser(); // Fetch user information when the component mounts
+  }, [token]);
+
+  const fetchTasks = async () => {
+    try {
+      const response = await axiosClient.get("/tasks", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       });
+      const todayTasks = response.data.filter(
+        (task) => task.date === today && task.user_id === userId
+      );
+      setTasks(todayTasks);
+      localStorage.setItem("tasks", JSON.stringify(todayTasks));
+    } catch (error) {
+      console.error("Error fetching tasks:", error);
+      const storedTasks = JSON.parse(localStorage.getItem("tasks")) || [];
+      setTasks(storedTasks);
+    }
   };
 
   useEffect(() => {
-    fetchTodayTasks();
-  }, [today]);
+    fetchTasks();
+  }, [today, userId, token]);
 
   const handleChangeStatus = (taskId, newStatus) => {
     axiosClient
@@ -55,11 +80,10 @@ const TodaysChallenges = () => {
         }
       )
       .then((response) => {
-        // console.log("Task status updated successfully:", response.data);
-        fetchTodayTasks();
+        fetchTasks();
       })
       .catch((error) => {
-        // console.error("Error updating task status:", error);
+        console.error("Error updating task status:", error);
       });
   };
 
@@ -71,11 +95,10 @@ const TodaysChallenges = () => {
         },
       })
       .then((response) => {
-        // console.log("Task deleted successfully:", response.data);
-        fetchTodayTasks(); // Refetch today's tasks after deleting
+        fetchTasks();
       })
       .catch((error) => {
-        // console.error("Error deleting task:", error);
+        console.error("Error deleting task:", error);
       });
   };
 
@@ -84,7 +107,7 @@ const TodaysChallenges = () => {
     axiosClient
       .post(
         "/tasks",
-        { content, date: today, status: "created" },
+        { content, date: today, status: "created", user_id: userId },
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -92,12 +115,11 @@ const TodaysChallenges = () => {
         }
       )
       .then((response) => {
-        // console.log("Task added successfully:", response.data);
         setContent("");
-        fetchTodayTasks(); // Refetch today's tasks after adding a new task
+        fetchTasks();
       })
       .catch((error) => {
-        // console.error("Error adding task:", error);
+        console.error("Error adding task:", error);
       });
   };
 
@@ -167,7 +189,7 @@ const TodaysChallenges = () => {
                     <div className="today-dropdown-menu">
                       <button
                         onClick={() => handleChangeStatus(task.id, "done")}
-                        >
+                      >
                         Done
                       </button>
                       <button onClick={() => handleDeleteTask(task.id)}>

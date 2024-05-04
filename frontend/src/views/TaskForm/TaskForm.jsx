@@ -1,9 +1,22 @@
-// TaskForm.jsx
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axiosClient from "../../ApiConnection/axiosClient";
 
 const TaskForm = ({ selectedDate }) => {
   const [content, setContent] = useState("");
+  const [userId, setUserId] = useState(null);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const response = await axiosClient.get("/user");
+        setUserId(response.data.id); // Set the user ID
+      } catch (error) {
+        // Handle error here
+      }
+    };
+
+    fetchUser(); // Fetch user information when the component mounts
+  }, []);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -12,7 +25,7 @@ const TaskForm = ({ selectedDate }) => {
     // Create task API request
     axiosClient.post(
       "/tasks",
-      { content, date: selectedDate.toISOString().slice(0, 10), status: "created" }
+      { content, date: selectedDate.toISOString().slice(0, 10), status: "created", user_id: userId } // Include the user ID
     )
     .then((response) => {
       // console.log("Task added successfully:", response.data);

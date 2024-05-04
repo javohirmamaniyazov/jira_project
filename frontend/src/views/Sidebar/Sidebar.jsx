@@ -59,7 +59,6 @@ const Sidebar = () => {
           {user && (
             <>
               <p className="user-name">{user.name}</p>
-              <p className="user-email">{user.email}</p>
             </>
           )}
         </div>
