@@ -74,4 +74,9 @@
     font-size: 20px;
     margin-right: 5px;
   }
-  
+
+  @media (max-width: 800px) {
+    .sidebar{
+      display: none;
+    }
+  }
