@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import TaskForm from "../TaskForm/TaskForm";
 import axiosClient from "../../ApiConnection/axiosClient";
 import { MdMoreVert } from "react-icons/md";
-import { useStateContext } from '../../contexts/contextprovider'
+import { useStateContext } from "../../contexts/contextprovider";
 import "./MonthPage.css";
 
 const MonthsSection = ({ onDaySelect }) => {
@@ -110,7 +110,7 @@ const MonthsSection = ({ onDaySelect }) => {
   return (
     <>
       <div className="months-section">
-        <div className="week-slider">
+        <div className="months-slider">
           <button onClick={handlePrevWeek} className="prev">
             &lt;
           </button>
@@ -147,7 +147,7 @@ const MonthsSection = ({ onDaySelect }) => {
               {selectedDate.toLocaleDateString("en-US", {
                 month: "long",
                 day: "numeric",
-                year: 'numeric'
+                year: "numeric",
               })}
             </h3>
             <div className="task-sections">

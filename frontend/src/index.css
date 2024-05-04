@@ -230,8 +230,11 @@ table > tbody > tr > td {
     flex: 1;
 }
 
-button {
-  margin-top: 5px;
+button:hover {
+    opacity: 0.8;
+}
+button:active {
+    opacity: 0.6;
 }
 
 #defaultLayout header {
