@@ -73,7 +73,7 @@ const Navbar = () => {
         </div>
         {isDropdownOpen && (
           <div className="dropdown-menu">
-            <a onClick={onLogout} style={{ display: "flex" }}>
+            <a onClick={onLogout} style={{ display: "flex", padding: "5px" }}>
               <FiLogOut size={23} />{" "}
               <p style={{ fontSize: "16px", margin: "2px", cursor: "pointer" }}>
                 Logout

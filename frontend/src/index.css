@@ -232,6 +232,7 @@ table > tbody > tr > td {
 
 button {
   margin-top: 5px;
+}
 button:hover {
     opacity: 0.8;
 }

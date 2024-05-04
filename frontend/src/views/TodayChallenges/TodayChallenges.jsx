@@ -139,7 +139,7 @@ const TodaysChallenges = ({ user }) => {
                 onChange={(e) => setContent(e.target.value)}
                 placeholder="Add a task"
               />
-              <button type="submit">Add</button>
+              <button type="submit" className="add">Add</button>
             </form>
           </div>
           <ul className="task-list">
@@ -150,7 +150,7 @@ const TodaysChallenges = ({ user }) => {
                   <span>{task.content}</span>
                   <span>{task.date}</span>
                   {openDropdownId === task.id && (
-                    <div className="dropdown-menu">
+                    <div className="today-dropdown-menu">
                       <button
                         onClick={() =>
                           handleChangeStatus(task.id, "in progress")
@@ -179,10 +179,14 @@ const TodaysChallenges = ({ user }) => {
               .filter((task) => task.status === "in progress")
               .map((task) => (
                 <li key={task.id} className="task-item">
-                  <span>{task.content}</span>
-                  <span>{task.date}</span>
+                  <div>
+                  <span className="task-item-text">{task.content}</span>
+                  </div>
+                  <div>
+
+                  <span className="task-item-date">{task.date}</span>
                   {openDropdownId === task.id && (
-                    <div className="dropdown-menu">
+                    <div className="today-dropdown-menu">
                       <button
                         onClick={() => handleChangeStatus(task.id, "done")}
                       >
@@ -197,7 +201,8 @@ const TodaysChallenges = ({ user }) => {
                     onClick={() => toggleDropdown(task.id)}
                     className="more-icon"
                     size={21}
-                  />
+                    />
+                    </div>
                 </li>
               ))}
           </ul>
@@ -212,7 +217,7 @@ const TodaysChallenges = ({ user }) => {
                   <span>{task.content}</span>
                   <span>{task.date}</span>
                   {openDropdownId === task.id && (
-                    <div className="dropdown-menu">
+                    <div className="today-dropdown-menu">
                       <button onClick={() => handleDeleteTask(task.id)}>
                         Delete
                       </button>
