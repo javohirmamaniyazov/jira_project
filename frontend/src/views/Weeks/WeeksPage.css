@@ -5,6 +5,7 @@
 }
 
 .week-card {
+  position: relative;
   flex: 1;
   background-color: #f4f4f4;
   border: 1px solid #ddd;
@@ -26,12 +27,13 @@
 
 .prevBtn,
 .nextBtn {
-  background-color: #f8f8f8;
-  color: rgb(105, 104, 104);
+  position: absolute;
+  background-color: #007bff;
+  color: rgb(48, 38, 38);
   border: 1px solid rgb(105, 104, 104);
-  border-radius: 50%;
   font-size: 16px;
-  padding: 8px 12px;
+  font-weight: bold;
+  padding: 22px 8px;
   cursor: pointer;
   transition: background-color 0.3s;
   position: absolute;
@@ -41,11 +43,11 @@
 }
 
 .prevBtn {
-  left: 3px;
+  left: 0px;
 }
 
 .nextBtn {
-  right: 3px;
+  right: 0;
 }
 
 .prevBtn.hidden,

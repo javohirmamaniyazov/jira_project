@@ -8,9 +8,31 @@ import Sidebar from "../views/Sidebar/Sidebar";
 import TodaysChallenges from "../views/TodayChallenges/TodayChallenges";
 
 export default function DefaultLayout() {
-  const { token} = useStateContext();
+  const { token } = useStateContext();
   const [today, setToday] = useState("");
   const [tasks, setTasks] = useState([]);
+  const [isEmailVerified, setIsEmailVerified] = useState(null);
+
+
+  useEffect(() => {
+    const fetchEmailVerificationStatus = async () => {
+      try {
+        const response = await axiosClient.get("/user/email-verified", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        setIsEmailVerified(response.data);
+      } catch (error) {
+        console.error("Error fetching email verification status:", error);
+        setIsEmailVerified(false); // Set as false by default if error occurs
+      }
+    };
+
+    if (token) {
+      fetchEmailVerificationStatus();
+    }
+  }, [token]);
 
   // Get today's date
   useEffect(() => {
@@ -38,7 +60,6 @@ export default function DefaultLayout() {
       });
   }, [token]);
 
-
   // Fetch tasks function
   const fetchTasks = () => {
     axiosClient
@@ -58,6 +79,17 @@ export default function DefaultLayout() {
 
   if (!token) {
     return <Navigate to="/login" />;
+  }
+
+  if (isEmailVerified === null) {
+    return <p>Loading...</p>;
+  } else if (!isEmailVerified) {
+    return (
+      <div>
+        <p>Your email is not verified. Please verify your email.</p>
+        {/* You can render a button or link to trigger the email verification process */}
+      </div>
+    );
   }
 
   return (

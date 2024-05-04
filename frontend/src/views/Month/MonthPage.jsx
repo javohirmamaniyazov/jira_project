@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import TaskForm from "../TaskForm/TaskForm";
 import axiosClient from "../../ApiConnection/axiosClient";
 import { MdMoreVert } from "react-icons/md";
-import { useStateContext } from '../../contexts/contextprovider'
+import { useStateContext } from "../../contexts/contextprovider";
 import "./MonthPage.css";
 
 const MonthsSection = ({ onDaySelect }) => {
@@ -11,6 +11,24 @@ const MonthsSection = ({ onDaySelect }) => {
   const [selectedDate, setSelectedDate] = useState(null);
   const [tasks, setTasks] = useState([]);
   const [openDropdownId, setOpenDropdownId] = useState(null);
+  const [userId, setUserId] = useState(null);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const response = await axiosClient.get("/user", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        setUserId(response.data.id); // Set the user ID
+      } catch (error) {
+        console.error("Error fetching user:", error);
+      }
+    };
+
+    fetchUser(); // Fetch user information when the component mounts
+  }, [token]);
 
   useEffect(() => {
     const today = new Date();
@@ -29,26 +47,27 @@ const MonthsSection = ({ onDaySelect }) => {
     setSelectedDate(today); // Set selected date to current day
   }, []);
 
+  useEffect(() => {
+    if (selectedDate && userId) {
+      fetchSelectedDayTasks(selectedDate);
+    }
+  }, [selectedDate, userId]);
+
   const handleDaySelect = (date) => {
     setSelectedDate(date);
     fetchSelectedDayTasks(date);
   };
 
-  const handleNextWeek = () => {
-    const nextWeekDays = currentWeekDays.map((date) => {
-      const nextDate = new Date(date);
-      nextDate.setDate(nextDate.getDate() + 7);
-      return nextDate;
-    });
-    setCurrentWeekDays(nextWeekDays);
-  };
-
   const fetchSelectedDayTasks = (date) => {
     axiosClient
-      .get("/tasks")
+      .get("/tasks", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
       .then((response) => {
         const todayTasks = response.data.filter(
-          (task) => task.date === date.toISOString().slice(0, 10)
+          (task) => task.date === date.toISOString().slice(0, 10) && task.user_id === userId
         );
         setTasks(todayTasks);
       })
@@ -57,10 +76,11 @@ const MonthsSection = ({ onDaySelect }) => {
         setTasks([]);
       });
   };
+  
 
-  const handleChangeStatus = (taskId, newStatus) => {
-    axiosClient
-      .put(
+  const handleChangeStatus = async (taskId, newStatus) => {
+    try {
+      await axiosClient.put(
         `/tasks/${taskId}`,
         { status: newStatus },
         {
@@ -68,15 +88,13 @@ const MonthsSection = ({ onDaySelect }) => {
             Authorization: `Bearer ${token}`,
           },
         }
-      )
-      .then((response) => {
-        // console.log("Task status updated successfully:", response.data);
-        fetchSelectedDayTasks(selectedDate);
-      })
-      .catch((error) => {
-        // console.error("Error updating task status:", error);
-      });
+      );
+      fetchSelectedDayTasks(selectedDate);
+    } catch (error) {
+      console.error("Error updating task status:", error);
+    }
   };
+
 
   const handleDeleteTask = (taskId) => {
     axiosClient
@@ -86,11 +104,10 @@ const MonthsSection = ({ onDaySelect }) => {
         },
       })
       .then((response) => {
-        // console.log("Task deleted successfully:", response.data);
-        fetchSelectedDayTasks(selectedDate); // Refetch today's tasks after deleting
+        fetchSelectedDayTasks(selectedDate);
       })
       .catch((error) => {
-        // console.error("Error deleting task:", error);
+        console.error("Error deleting task:", error);
       });
   };
 
@@ -110,7 +127,7 @@ const MonthsSection = ({ onDaySelect }) => {
   return (
     <>
       <div className="months-section">
-        <div className="week-slider">
+        <div className="months-slider">
           <button onClick={handlePrevWeek} className="prev">
             &lt;
           </button>
@@ -136,9 +153,6 @@ const MonthsSection = ({ onDaySelect }) => {
               </p>
             </div>
           ))}
-          <button onClick={handleNextWeek} className="next">
-            &gt;
-          </button>
         </div>
         {selectedDate && (
           <div className="selected-day-form">
@@ -147,7 +161,7 @@ const MonthsSection = ({ onDaySelect }) => {
               {selectedDate.toLocaleDateString("en-US", {
                 month: "long",
                 day: "numeric",
-                year: 'numeric'
+                year: "numeric",
               })}
             </h3>
             <div className="task-sections">
